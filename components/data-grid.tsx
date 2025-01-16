@@ -179,7 +179,7 @@ export default function DataGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-[6] text-gray-800 font-semibold"
+                  className="gap-[6px] text-gray-800 font-semibold"
                 >
                   <Image
                     src="/assets/toolbar-1.svg"
@@ -192,7 +192,7 @@ export default function DataGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-[6] text-gray-800 font-semibold"
+                  className="gap-[6px] text-gray-800 font-semibold"
                 >
                   <Image
                     src="/assets/toolbar-2.svg"
@@ -205,7 +205,7 @@ export default function DataGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-[6] text-gray-800 font-semibold"
+                  className="gap-[6px] text-gray-800 font-semibold"
                 >
                   <Image
                     src="/assets/toolbar-3.svg"
@@ -218,7 +218,7 @@ export default function DataGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-[6] text-gray-800 font-semibold"
+                  className="gap-[6px] text-gray-800 font-semibold"
                 >
                   <Image
                     src="/assets/toolbar-4.svg"
@@ -231,7 +231,11 @@ export default function DataGrid() {
               </div>
 
               <div className="flex items-center gap-4">
-                <Button variant="default" size="sm" className="font-semibold">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="font-semibold gap-[6px]"
+                >
                   <Image
                     src="/assets/toolbar-5.svg"
                     width={12}
