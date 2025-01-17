@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -19,9 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import EditableCell from "./editable-cell";
 import EditableHeader from "./editable-header";
 
-const imageArray = ["/assets/figma.png", "/assets/gpt.png", "/assets/bmw.png"];
-
-interface GridRow {
+export interface GridRow {
   id: number;
   timestamp: string;
   action: string;
@@ -30,105 +27,33 @@ interface GridRow {
   [key: string]: string | number;
 }
 
-interface Column {
+export interface Column {
   id: string;
   name: string;
   icon: string;
 }
 
-export default function DataGrid() {
-  const [autoSave, setAutoSave] = useState(false);
-  const [rows, setRows] = useState<GridRow[]>([
-    {
-      id: 1,
-      timestamp: "Oct 12, 2024 at 14:08 PM",
-      action: "Bitscale Evaluation - Account relevancy check.csv",
-      company: "Bitscale Evaluation - Account relevancy check.csv",
-      icon: "/assets/figma.png",
-    },
-    {
-      id: 2,
-      timestamp: "Oct 12, 2024 at 14:08 PM",
-      action: "cell data size exceeds limit",
-      company: "BMW Evaluation - Relevancy check.csv",
-      icon: "/assets/gpt.png",
-    },
-    {
-      id: 3,
-      timestamp: "Oct 12, 2024 at 14:08 PM",
-      action: "https://www.linkedIn.com/bitScale.ai/sample",
-      company: "Google Evaluation - Lilevancy check.csv",
-      icon: "/assets/figma.png",
-    },
-    {
-      id: 4,
-      timestamp: "Oct 12, 2024 at 14:08 PM",
-      action: "Loading data, Please wait",
-      company: "Apple Evaluation - Olvancy check.csv",
-      icon: "/assets/bmw.png",
-    },
-    {
-      id: 5,
-      timestamp: "Oct 12, 2024 at 14:08 PM",
-      action: "Loading data, Please wait",
-      company: "Apple Evaluation - Olvancy check.csv",
-      icon: "/assets/gpt.png",
-    },
-  ]);
+interface DataGridProps {
+  rows: GridRow[];
+  columns: Column[];
+  onCellChange: (rowId: number, columnId: string, value: string) => void;
+  onHeaderChange: (columnId: string, value: string) => void;
+  onAddRow: () => void;
+  onAddColumn: () => void;
+  autoSave: boolean;
+  onAutoSaveChange: (value: boolean) => void;
+}
 
-  const [columns, setColumns] = useState<Column[]>([
-    { id: "timestamp", name: "Input Column", icon: "A" },
-    { id: "action", name: "Action column", icon: "/assets/gpt.png" },
-    { id: "company", name: "Enrich Company", icon: "/assets/enrich.png" },
-  ]);
-
-  const handleCellChange = (rowId: number, columnId: string, value: string) => {
-    setRows(
-      rows.map((row) =>
-        row.id === rowId ? { ...row, [columnId]: value } : row
-      )
-    );
-  };
-
-  const handleHeaderChange = (columnId: string, value: string) => {
-    setColumns(
-      columns.map((column) =>
-        column.id === columnId
-          ? { ...column, name: value, icon: value.charAt(0).toUpperCase() }
-          : column
-      )
-    );
-  };
-
-  const addRow = useCallback(() => {
-    const randomImage =
-      imageArray[Math.floor(Math.random() * imageArray.length)];
-    const newRow: GridRow = {
-      id: rows.length + 1,
-      timestamp: "",
-      action: "",
-      company: "",
-      icon: randomImage,
-    };
-    columns.forEach((column) => {
-      if (!["timestamp", "action", "company", "icon"].includes(column.id)) {
-        newRow[column.id] = "";
-      }
-    });
-    setRows((prevRows) => [...prevRows, newRow]);
-  }, [rows, columns]);
-
-  const addColumn = useCallback(() => {
-    const newColumnId = `column${columns.length + 1}`;
-    setColumns((prevColumns) => [
-      ...prevColumns,
-      { id: newColumnId, name: `New Column ${columns.length + 1}`, icon: "A" },
-    ]);
-    setRows((prevRows) =>
-      prevRows.map((row) => ({ ...row, [newColumnId]: "" }))
-    );
-  }, [columns]);
-
+export default function DataGrid({
+  rows,
+  columns,
+  onCellChange,
+  onHeaderChange,
+  onAddRow,
+  onAddColumn,
+  autoSave,
+  onAutoSaveChange,
+}: DataGridProps) {
   return (
     <div className={`flex flex-col min-h-screen`}>
       {/* Top Navigation */}
@@ -139,7 +64,7 @@ export default function DataGrid() {
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <Switch checked={autoSave} onCheckedChange={setAutoSave} />
+            <Switch checked={autoSave} onCheckedChange={onAutoSaveChange} />
             <span className="text-sm text-green-600">Auto Save</span>
           </div>
           <Button variant="ghost" size="icon" className="rounded-full">
@@ -285,9 +210,7 @@ export default function DataGrid() {
                         <EditableHeader
                           initialValue={column.name}
                           icon={column.icon}
-                          onChange={(value) =>
-                            handleHeaderChange(column.id, value)
-                          }
+                          onChange={(value) => onHeaderChange(column.id, value)}
                         />
                       </motion.th>
                     ))}
@@ -297,7 +220,7 @@ export default function DataGrid() {
                       variant="link"
                       size="sm"
                       className="font-semibold text-md"
-                      onClick={addColumn}
+                      onClick={onAddColumn}
                     >
                       <Plus className="h-4 w-4" />
                       Add Column
@@ -343,7 +266,7 @@ export default function DataGrid() {
                               <EditableCell
                                 value={(row[column.id] as string) || ""}
                                 onChange={(value) =>
-                                  handleCellChange(row.id, column.id, value)
+                                  onCellChange(row.id, column.id, value)
                                 }
                               />
                             </div>
@@ -351,7 +274,7 @@ export default function DataGrid() {
                             <EditableCell
                               value={(row[column.id] as string) || ""}
                               onChange={(value) =>
-                                handleCellChange(row.id, column.id, value)
+                                onCellChange(row.id, column.id, value)
                               }
                             />
                           )}
@@ -375,7 +298,7 @@ export default function DataGrid() {
             <Button
               variant="ghost"
               className="w-full justify-start py-2 rounded-none hover:bg-gray-100 border-t border-x border-gray-200"
-              onClick={addRow}
+              onClick={onAddRow}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Row
