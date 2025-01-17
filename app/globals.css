@@ -31,14 +31,15 @@ html {
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -80,27 +81,7 @@ th {
   text-wrap: nowrap;
 }
 
-/* Make the table body scrollable */
-.table-container {
-  max-height: calc(
-    100vh - 250px
-  ); /* Adjust based on the space occupied by header and toolbar */
-  overflow-y: auto;
-  padding-bottom: 56px; /* Padding to make space for the sticky Add Row button */
-  position: relative;
-}
-
-/* Ensure the table body itself has a fixed height and scrolls */
 table {
   width: 100%;
   table-layout: fixed;
-}
-
-/* Make the 'Add Row' button sticky at the bottom of the viewport */
-.add-row-btn {
-  position: sticky;
-  bottom: 0;
-  width: 100%;
-  z-index: 10; /* Ensure the button stays above the table rows */
-  background-color: white; /* Ensure background color to match the table */
 }

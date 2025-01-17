@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -130,9 +130,9 @@ export default function DataGrid() {
   }, [columns]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={`flex flex-col min-h-screen`}>
       {/* Top Navigation */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-[#E5E5E5] h-16 fixed top-0 left-0 right-0 bg-white z-10">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 h-16 fixed top-0 left-0 right-0 bg-white z-10">
         <div className="flex items-center gap-4">
           <ArrowLeft className="h-4 w-4 text-gray-800 cursor-pointer" />
           <span className="text-sm text-gray-500">Name of the file</span>
@@ -163,19 +163,16 @@ export default function DataGrid() {
           transition={{ duration: 0.3 }}
         >
           {/* Toolbar */}
-          <div className="py-[26px] px-5 flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-between border-b sticky top-0 bg-white z-10">
-            <div className="w-full sm:w-auto">
-              <div className="relative flex-grow">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="py-[26px] px-5 flex md:flex-row flex-col md:items-center gap-4 md:gap-0 justify-between border-b sticky top-0 bg-white z-10">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground text-zinc-400" />
                 <Input
                   placeholder="Search"
-                  className="pl-8 rounded-[8px] border-gray-300 bg-gray-50 w-full"
+                  className="pl-8 rounded-[8px] border-gray-300 bg-gray-50 md:w-64"
                 />
               </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 justify-between w-full sm:w-auto">
-              <div className="flex items-center gap-4 flex-shrink-0">
+              <div className="flex items-center md:gap-4 gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -229,38 +226,41 @@ export default function DataGrid() {
                   Sort
                 </Button>
               </div>
+            </div>
 
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="font-semibold gap-[6px]"
-                >
-                  <Image
-                    src="/assets/toolbar-5.svg"
-                    width={12}
-                    height={12}
-                    alt="toolbar"
-                  />
-                  Enrich
+            <div className="flex items-center gap-4">
+              <Button
+                variant="default"
+                size="sm"
+                className="font-semibold gap-[6px]"
+              >
+                <Image
+                  src="/assets/toolbar-5.svg"
+                  width={12}
+                  height={12}
+                  alt="toolbar"
+                />
+                Enrich
+              </Button>
+              <div className="flex items-center">
+                <Button variant="ghost" size="icon">
+                  <Share2 className="h-4 w-4" />
                 </Button>
-                <div className="flex items-center ">
-                  <Button variant="ghost" size="icon">
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button variant="ghost" size="icon">
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
 
+          <p className="text-sm text-gray-500 my-2 mx-5 p-1 bg-gray-100 w-fit border border-gray-200 rounded-md">
+            Double-click on any cell to edit its content.
+          </p>
           {/* Grid Header and Body */}
-          <div className="overflow-auto table-container">
+          <div className="overflow-x-auto">
             <table className="w-auto border-collapse table-auto">
               <thead>
                 <tr className="bg-[#F6F6F6]">
@@ -307,19 +307,24 @@ export default function DataGrid() {
               </thead>
               <tbody>
                 <AnimatePresence>
-                  {rows.map((row) => (
+                  {rows.map((row, index) => (
                     <motion.tr
                       key={row.id}
+                      className={`hover:bg-gray-50 ${
+                        index === rows.length - 1 ? "border-b" : ""
+                      }`}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3 }}
                     >
                       <td className="border-t border-l border-r px-3 py-2 text-sm w-10">
-                        <span className="text-muted-foreground">{row.id}</span>
+                        <span className="text-muted-foreground text-zinc-400">
+                          {row.id}
+                        </span>
                       </td>
                       <td className="border-t border-l border-r px-3 py-2 text-sm w-10">
-                        <PlayCircle className="h-5 w-5 text-muted-foreground" />
+                        <PlayCircle className="h-5 w-5 text-muted-foreground text-zinc-400" />
                       </td>
                       {columns.map((column) => (
                         <td
@@ -362,14 +367,14 @@ export default function DataGrid() {
 
           {/* Add Row Button */}
           <motion.div
-            className="add-row-btn"
+            className="sticky bottom-0 w-full"
             initial={{ y: 0 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <Button
               variant="ghost"
-              className="w-full justify-start py-2 rounded-none hover:bg-gray-100 border-t border-x border-gray-200 "
+              className="w-full justify-start py-2 rounded-none hover:bg-gray-100 border-t border-x border-gray-200"
               onClick={addRow}
             >
               <Plus className="h-4 w-4 mr-2" />
